@@ -2,6 +2,7 @@ import datetime as dt
 from bs4 import BeautifulSoup
 import requests
 from textwrap import dedent
+import xml.sax.saxutils
 
 URL = "https://www.pinboard.in/popular/"
 
@@ -13,8 +14,9 @@ def get_html() -> str:
 
 
 def process_link(title: str, link: str) -> str:
-    return f"<item><title>{title}</title><link>{link}</link><guid>{link}</guid></item>"
-
+    safe_title = xml.sax.saxutils.escape(title)
+    safe_link = xml.sax.saxutils.escape(link)
+    return f"<item><title>{safe_title}</title><link>{safe_link}</link><guid>{safe_link}</guid></item>"
 
 def generate_feed() -> str:
     soup = BeautifulSoup(get_html(), "html.parser")
